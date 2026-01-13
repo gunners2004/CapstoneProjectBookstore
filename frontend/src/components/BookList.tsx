@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import BookCard from './BookCard'
 import Pagination from './Pagination'
-import * as bookAPI from '../api/books'
+import * as bookAPI from '../api/book'
 import { useCart } from '../context/CartContext'
 import '../styles/book-list.css'
 
@@ -49,7 +49,7 @@ export default function BookList({ search, genre, author }: BookListProps) {
 
                 setBooks(response.content)
                 setTotalPages(response.totalPages)
-            } catch (err: any) {
+            } catch (err:  any) {
                 setError(err.message || 'Failed to load books')
             } finally {
                 setLoading(false)
@@ -89,10 +89,10 @@ export default function BookList({ search, genre, author }: BookListProps) {
                         author={book.author}
                         price={book.price}
                         discountPrice={book.discountPrice}
-                        imageUrl={book.imageUrl}
+                        imageUrl={book. imageUrl}
                         averageRating={book.averageRating}
                         ratingCount={book.ratingCount}
-                        quantityInStock={book. quantityInStock}
+                        quantityInStock={book.quantityInStock}
                         onAddToCart={() => handleAddToCart(book. id)}
                     />
                 ))}

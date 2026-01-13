@@ -1,4 +1,3 @@
-import React from 'react'
 import '../styles/pagination.css'
 
 /**
@@ -6,7 +5,7 @@ import '../styles/pagination.css'
  */
 interface PaginationProps {
     currentPage: number
-    totalPages: number
+    totalPages:  number
     onPageChange: (page: number) => void
 }
 

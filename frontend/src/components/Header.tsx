@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
@@ -58,7 +58,7 @@ export default function Header() {
                             </Link>
                             <Link to="/orders" className="nav-link">Orders</Link>
                             <div className="user-menu">
-                                <span className="username">{user?. username}</span>
+                                <span className="username">{user?.username}</span>
                                 <div className="dropdown">
                                     <Link to="/profile" className="dropdown-item">Profile</Link>
                                     <Link to="/favorites" className="dropdown-item">Favorites</Link>

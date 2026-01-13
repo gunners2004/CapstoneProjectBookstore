@@ -1,15 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
 /**
- * AuthContext - Контекст для управления аутентификацией (Session-based)
+ * AuthContext - Контекст для управления аутентификацией
  *
- * Вместо JWT используем сессии (cookies):
- * - При логине сервер создаёт JSESSIONID cookie
- * - Браузер автоматически отправляет cookie с каждым запросом
- * - Сессии хранятся в MongoDB
+ * Предоставляет:
+ * - Информацию о пользователе
+ * - Функции login, logout, register
  */
 interface User {
-    id: string
+    id:  string
     username: string
     email: string
     role?:  string
@@ -18,7 +17,7 @@ interface User {
 interface AuthContextType {
     user: User | null
     error: string | null
-    loading: boolean
+    loading:  boolean
     isAuthenticated: boolean
     login:  (email: string, password: string) => Promise<boolean>
     logout: () => Promise<void>
@@ -28,7 +27,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+interface AuthProviderProps {
+    children: ReactNode
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -47,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const response = await fetch('/api/auth/me', {
                 method: 'GET',
-                credentials: 'include', // ВАЖНО: включаем cookies
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' }
             })
 
@@ -79,21 +82,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setError(null)
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
-                credentials: 'include', // ВАЖНО: включаем cookies
-                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                headers: { 'Content-Type':  'application/json' },
                 body: JSON.stringify(userData)
             })
 
-            if (! response.ok) {
+            if (!response.ok) {
                 const data = await response.json()
                 throw new Error(data.error || 'Registration failed')
             }
 
-            // После регистрации проверяем что авторизованы
             await checkAuth()
             return true
         } catch (err: any) {
-            setError(err.message)
+            setError(err. message)
             return false
         }
     }
@@ -106,21 +108,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setError(null)
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
-                credentials: 'include', // ВАЖНО:  включаем cookies
-                headers:  { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             })
 
             if (!response.ok) {
                 const data = await response.json()
-                throw new Error(data. error || 'Login failed')
+                throw new Error(data.error || 'Login failed')
             }
 
-            // После логина проверяем что авторизованы
             await checkAuth()
             return true
         } catch (err: any) {
-            setError(err.message)
+            setError(err. message)
             return false
         }
     }
@@ -132,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             await fetch('/api/auth/logout', {
                 method: 'POST',
-                credentials: 'include', // ВАЖНО: включаем cookies
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' }
             })
 
@@ -155,10 +156,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext. Provider value={value}>
+        <AuthContext.Provider value={value}>
             {children}
-        </AuthContext. Provider>
-)
+        </AuthContext.Provider>
+    )
 }
 
 /**
