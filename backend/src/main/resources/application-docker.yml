@@ -2,10 +2,11 @@ spring:
   application:
     name: bookstore-backend
 
-  # ===== MongoDB Configuration =====
+  # ===== MongoDB Configuration (для Docker) =====
   data:
     mongodb:
-      uri: mongodb://mongo:27017/bookstoredb
+      # ✅ Для Docker - используем имя сервиса
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongo:27017/bookstoredb}
       auto-index-creation: true
 
   # ===== Session Configuration =====
@@ -19,9 +20,9 @@ spring:
     session:
       timeout: 30m
       cookie:
-        name: JSESSIONID
+        name:  JSESSIONID
         http-only: true
-        secure:  true  # HTTPS в production
+        secure: true  # true в Docker/production
         same-site: strict
 
   # ===== Jackson Configuration =====
@@ -32,13 +33,9 @@ spring:
 
 # ===== Server Configuration =====
 server:
-  port: ${SERVER_PORT: 8080}
-  servlet:
-    context-path: /
-  error:
-    include-message:  always
+  port: ${SERVER_PORT:8080}
 
-# ===== Logging Configuration =====
+# ===== Logging =====
 logging:
   level:
     root:  WARN

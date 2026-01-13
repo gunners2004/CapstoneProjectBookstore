@@ -1,14 +1,12 @@
 # Stage 1: Build
 FROM eclipse-temurin:21-jdk-jammy AS builder
-LABEL maintainer="Banking App Team"
+LABEL maintainer="BookStore Team"
 
 WORKDIR /app
 
-# Копируем Maven файлы
-COPY pom. xml.
-COPY . mvn
-
-# Загружаем зависимости
+# Копируем pom.xml и скачиваем зависимости
+COPY pom.xml .
+COPY .  mvn . mvn./
 RUN mvn dependency:go-offline -B
 
 # Копируем исходный код
@@ -18,8 +16,8 @@ COPY src src
 RUN mvn clean package -DskipTests -B
 
 # Stage 2: Runtime
-FROM eclipse-temurin:21-jre-jammy
-LABEL maintainer="Banking App Team"
+FROM eclipse-temurin: 21-jre-jammy
+LABEL maintainer="BookStore Team"
 
 WORKDIR /app
 

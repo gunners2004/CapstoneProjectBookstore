@@ -2,11 +2,6 @@ import axios from 'axios'
 
 /**
  * Axios client для API запросов (Session-based auth)
- *
- * ВАЖНЫЕ ИЗМЕНЕНИЯ для session auth:
- * 1. Удалили setAuthToken (нет JWT)
- * 2. Включили withCredentials для отправки cookies
- * 3. Сессия управляется браузером автоматически
  */
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
