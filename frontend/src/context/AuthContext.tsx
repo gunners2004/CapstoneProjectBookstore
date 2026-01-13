@@ -15,6 +15,7 @@ interface User {
 }
 
 interface AuthContextType {
+
     user: User | null
     error: string | null
     loading:  boolean

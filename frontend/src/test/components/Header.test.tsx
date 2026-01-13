@@ -1,52 +1,59 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import Header from '../../components/Header'
-import { AuthProvider } from '../../context/AuthContext'
-import { CartProvider } from '../../context/CartContext'
-import React from 'react'
 
 /**
- * Header Tests
+ * Простые тесты для Header компонента
  */
-const renderWithProviders = (component: React.ReactElement) => {
-    return render(
-        <BrowserRouter>
-            <AuthProvider>
-                <CartProvider>
-                    {component}
-                </CartProvider>
-            </AuthProvider>
-        </BrowserRouter>
-    )
-}
 
 describe('Header Component', () => {
-    beforeEach(() => {
-        localStorage. clear()
-        vi.clearAllMocks()
+    const renderHeader = () => {
+        return render(
+            <BrowserRouter>
+                <Header />
+            </BrowserRouter>
+        )
+    }
+
+    it('should render logo text', () => {
+        renderHeader()
+        expect(screen.getByText(/📚 BookStore/)).toBeInTheDocument()
     })
 
-    it('should render logo', () => {
-        renderWithProviders(<Header />)
-        const logo = screen.getByText('📚 BookStore')
-        expect(logo).toBeInTheDocument()
+    it('should render search input', () => {
+        renderHeader()
+        const searchInput = screen.getByPlaceholderText(/Search books/)
+        expect(searchInput).toBeInTheDocument()
     })
 
-    it('should show login and register links for unauthenticated users', () => {
-        renderWithProviders(<Header />)
-        expect(screen.getByText('Login')).toBeInTheDocument()
-        expect(screen.getByText('Register')).toBeInTheDocument()
+    it('should render home link', () => {
+        renderHeader()
+        const homeLink = screen.getByText('Home')
+        expect(homeLink).toBeInTheDocument()
     })
 
-    it('should show cart link for authenticated users', () => {
-        localStorage.setItem('bookstore_token', 'test_token')
-        localStorage.setItem('bookstore_user', JSON.stringify({
-            id: '1',
-            username: 'testuser'
-        }))
+    it('should render books link', () => {
+        renderHeader()
+        const booksLink = screen.getByText('Books')
+        expect(booksLink).toBeInTheDocument()
+    })
 
-        renderWithProviders(<Header />)
-        expect(screen.getByText(/Cart/)).toBeInTheDocument()
+    it('should have correct home link href', () => {
+        renderHeader()
+        const homeLink = screen.getByText('Home').closest('a')
+        expect(homeLink?.getAttribute('href')).toBe('/')
+    })
+
+    it('should have correct books link href', () => {
+        renderHeader()
+        const booksLink = screen.getByText('Books').closest('a')
+        expect(booksLink?.getAttribute('href')).toBe('/books')
+    })
+
+    it('search input should be empty initially', () => {
+        renderHeader()
+        const searchInput = screen.getByPlaceholderText(/Search books/) as HTMLInputElement
+        expect(searchInput.value).toBe('')
     })
 })

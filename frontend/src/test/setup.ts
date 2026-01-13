@@ -1,13 +1,14 @@
-import { expect, afterEach, vi } from 'vitest'
+import { afterEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 /**
- * Test Setup
+ * Test Setup - выполняется перед каждым тестом
  */
+
+// Очищаем DOM после каждого теста
 afterEach(() => {
     cleanup()
-    localStorage.clear()
 })
 
 // Мокируем localStorage

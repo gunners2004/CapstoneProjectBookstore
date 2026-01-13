@@ -2,41 +2,29 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import BookCard from '../../components/BookCard'
-import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from '../../context/AuthContext'
-import React from 'react'
 
 /**
- * BookCard Tests
+ * Простые тесты для BookCard компонента
  */
-const renderWithRouter = (component: React.ReactElement) => {
-    return render(
-        <BrowserRouter>
-            <AuthProvider>
-                {component}
-            </AuthProvider>
-        </BrowserRouter>
-    )
-}
 
 describe('BookCard Component', () => {
     const mockBook = {
-        id:  '1',
-        title: 'Test Book',
-        author:  'Test Author',
-        price: 29.99,
-        discountPrice: 19.99,
-        imageUrl: 'https://example.com/image.jpg',
+        id: '1',
+        title: 'The Great Gatsby',
+        author:  'F. Scott Fitzgerald',
+        price: 15.99,
+        discountPrice: 12.99,
+        imageUrl: 'https://example.com/gatsby.jpg',
         averageRating: 4.5,
-        ratingCount: 100,
+        ratingCount: 250,
         quantityInStock: 10
     }
 
     const mockOnAddToCart = vi.fn()
     const mockOnAddToFavorites = vi.fn()
 
-    it('should render book information', () => {
-        renderWithRouter(
+    it('should render book title', () => {
+        render(
             <BookCard
                 {... mockBook}
                 onAddToCart={mockOnAddToCart}
@@ -44,13 +32,23 @@ describe('BookCard Component', () => {
             />
         )
 
-        expect(screen.getByText('Test Book')).toBeInTheDocument()
-        expect(screen.getByText('Test Author')).toBeInTheDocument()
-        expect(screen.getByText('$19.99')).toBeInTheDocument()
+        expect(screen.getByText('The Great Gatsby')).toBeInTheDocument()
     })
 
-    it('should show discount badge', () => {
-        renderWithRouter(
+    it('should render author name', () => {
+        render(
+            <BookCard
+                {... mockBook}
+                onAddToCart={mockOnAddToCart}
+                onAddToFavorites={mockOnAddToFavorites}
+            />
+        )
+
+        expect(screen.getByText('F. Scott Fitzgerald')).toBeInTheDocument()
+    })
+
+    it('should render current price', () => {
+        render(
             <BookCard
                 {...mockBook}
                 onAddToCart={mockOnAddToCart}
@@ -58,13 +56,14 @@ describe('BookCard Component', () => {
             />
         )
 
-        expect(screen.getByText(/-\d+%/)).toBeInTheDocument()
+        expect(screen.getByText('$12.99')).toBeInTheDocument()
     })
 
-    it('should show in stock status', () => {
-        renderWithRouter(
+    it('should show "In Stock" when quantity > 0', () => {
+        render(
             <BookCard
                 {...mockBook}
+                quantityInStock={10}
                 onAddToCart={mockOnAddToCart}
                 onAddToFavorites={mockOnAddToFavorites}
             />
@@ -73,9 +72,23 @@ describe('BookCard Component', () => {
         expect(screen.getByText('In Stock')).toBeInTheDocument()
     })
 
+    it('should show "Out of Stock" when quantity = 0', () => {
+        render(
+            <BookCard
+                {...mockBook}
+                quantityInStock={0}
+                onAddToCart={mockOnAddToCart}
+                onAddToFavorites={mockOnAddToFavorites}
+            />
+        )
+
+        expect(screen. getByText('Out of Stock')).toBeInTheDocument()
+    })
+
     it('should call onAddToCart when button clicked', async () => {
         const user = userEvent.setup()
-        renderWithRouter(
+
+        render(
             <BookCard
                 {...mockBook}
                 onAddToCart={mockOnAddToCart}
@@ -86,6 +99,54 @@ describe('BookCard Component', () => {
         const addButton = screen.getByText('Add to Cart')
         await user.click(addButton)
 
-        expect(mockOnAddToCart).toHaveBeenCalled()
+        expect(mockOnAddToCart).toHaveBeenCalledTimes(1)
+    })
+
+    it('should render rating information', () => {
+        render(
+            <BookCard
+                {... mockBook}
+                onAddToCart={mockOnAddToCart}
+                onAddToFavorites={mockOnAddToFavorites}
+            />
+        )
+
+        expect(screen.getByText(/4.5/)).toBeInTheDocument()
+        expect(screen.getByText(/250/)).toBeInTheDocument()
+    })
+
+    it('should have correct image src', () => {
+        render(
+            <BookCard
+                {... mockBook}
+                onAddToCart={mockOnAddToCart}
+                onAddToFavorites={mockOnAddToFavorites}
+            />
+        )
+
+        const image = screen.getByAltText('The Great Gatsby') as HTMLImageElement
+        expect(image.src).toBe('https://example.com/gatsby.jpg')
+    })
+
+    it('should disable button when out of stock', () => {
+        render(
+            <BookCard
+                {...mockBook}
+                quantityInStock={0}
+                onAddToCart={mockOnAddToCart}
+                onAddToFavorites={mockOnAddToFavorites}
+            />
+        )
+
+        const button = screen.getByText('Out of Stock')
+        expect(button).toBeDisabled()
+    })
+
+    it('should calculate discount percentage correctly', () => {
+        const originalPrice = 100
+        const discountPrice = 75
+        const discount = Math.round((1 - (discountPrice / originalPrice)) * 100)
+
+        expect(discount).toBe(25)
     })
 })

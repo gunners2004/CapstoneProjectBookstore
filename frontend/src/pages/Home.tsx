@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Link } from 'react-router-dom'
 import BookList from '../components/BookList'
 import '../styles/pages/home.css'
