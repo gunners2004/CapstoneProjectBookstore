@@ -400,14 +400,14 @@ This project is licensed under the MIT License - see LICENSE file for details.
 Code
 MIT License
 
-Copyright (c) 2024 BookStore
+Copyright (c) 2026 BookStore
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction... 
 👨‍💻 Author
-[Your Name]
+[Andrii Shevchenko]
 
 GitHub: @gunners2004
 Email: sheva1988andrei@gmail.com
-Portfolio: yourwebsite. com
+
