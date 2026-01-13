@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: bookstore-backend
+
+  # ===== MongoDB Configuration =====
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/bookstoredb
+      auto-index-creation: true
+
+  # ===== Session Configuration =====
+  session:
+    store-type: mongodb
+    mongodb:
+      collection-name: spring_session
+    timeout: 1800
+
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        name: JSESSIONID
+        http-only: true
+        secure:  true  # HTTPS в production
+        same-site: strict
+
+  # ===== Jackson Configuration =====
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+
+# ===== Server Configuration =====
+server:
+  port: ${SERVER_PORT: 8080}
+  servlet:
+    context-path: /
+  error:
+    include-message:  always
+
+# ===== Logging Configuration =====
+logging:
+  level:
+    root:  WARN
+    com.example.bookstore: INFO
+    org.springframework.session: INFO

@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: bookstore-backend
+
+  # ===== MongoDB Configuration =====
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bookstoredb
+      auto-index-creation: true
+
+  # ===== Session Configuration (MongoDB-backed sessions) =====
+  session:
+    # Используем MongoDB для хранения сессий
+    store-type: mongodb
+    mongodb:
+      # Коллекция в MongoDB где будут храниться сессии
+      collection-name: spring_session
+    # Время жизни сессии в секундах (30 минут)
+    timeout: 1800
+
+  # ===== Servlet Session Configuration =====
+  servlet:
+    session:
+      # Имя cookie для JSESSIONID
+      cookie:
+        name: JSESSIONID
+        # Путь для cookie
+        path: /
+        # HttpOnly флаг (защита от XSS)
+        http-only: true
+        # Secure флаг (отправлять только по HTTPS в production)
+        secure: false # Установить true в production
+        # SameSite атрибут (защита от CSRF)
+        same-site: lax
+        # Максимальный возраст cookie
+        max-age: 1800
+      # Время жизни сессии
+      timeout: 30m
+      # Отслеживание изменений
+      tracking-modes: cookie
+
+  # ===== Jackson Configuration =====
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+    default-property-inclusion: non_null
+
+  # ===== Web Configuration =====
+  web:
+    cors:
+      allowed-origins: "http://localhost:5173,http://localhost:3000,http://localhost"
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
+
+# ===== Server Configuration =====
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+  # Session cookies configuration
+  servlet:
+    session:
+      cookie:
+        secure: false  # true в production (HTTPS)
+        http-only: true
+        same-site: lax
+
+# ===== Logging Configuration =====
+logging:
+  level:
+    root: INFO
+    com.example. bookstore: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.session: INFO
+    org.springframework.data.mongodb: INFO
+  pattern:
+    console: "%d{HH:mm:ss. SSS} [%thread] %-5level %logger{36} - %msg%n"
